@@ -14,9 +14,12 @@ class TestController extends Controller
     public function test(){
         echo 'Admin分组 Test控制器 index方法<br/>';
         echo __APP__;
+        $id = $_GET['id'];
+        $id = ($id == '') ? '1' : $id;
+        $this ->assign('id',$id);
         #return $this->display();
         #return $this->display('test1');
-        return $this->display('Demo/test1');
+        $this->display('Demo/test1');
     }
 
     public function test1(){
@@ -32,6 +35,12 @@ class TestController extends Controller
 
     public function test3(){
         $this -> error('跳转失败');
+    }
+    /*
+     * 模板常量
+     **/
+    public function test4(){
+        $this -> display();
     }
 
     public function index(){
