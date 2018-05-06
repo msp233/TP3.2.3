@@ -16,7 +16,7 @@ class TestController extends Controller
         echo __APP__;
         #return $this->display();
         #return $this->display('test1');
-        return $this->display('Test1/test1');
+        return $this->display('Demo/test1');
     }
 
     public function test1(){
