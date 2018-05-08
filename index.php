@@ -11,6 +11,9 @@
 
 // 应用入口文件
 
+ //给入口文件添加一个header头声明字符集
+ header('Content-Type:text/html;charset=utf-8');
+
 // 检测PHP环境
 if(version_compare(PHP_VERSION,'5.3.0','<'))  die('require PHP > 5.3.0 !');
 
