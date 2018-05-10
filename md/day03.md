@@ -21,9 +21,9 @@
 在开启跟踪信息后，在页面右下角会出现一个小图标：  
 
 图标的左边绿色是ThinkPHP的logo，右侧的黑块上显示的是当前请求执行所消耗的时间单位是s(秒)
-![image](https://github.com/msp233/TP3.2.3/tree/master/md/img/tiaoshi.png)
+![image](https://raw.githubusercontent.com/msp233/TP3.2.3/master/md/img/tiaoshi.png)
 
-![image](https://github.com/msp233/TP3.2.3/tree/master/md/img/tiaoshiInfo.png)
+![image](https://raw.githubusercontent.com/msp233/TP3.2.3/master/md/img/tiaoshiInfo.png)
 
 
 ![image](https://note.youdao.com/favicon.ico)
