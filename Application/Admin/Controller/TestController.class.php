@@ -107,6 +107,67 @@ class TestController extends Controller
         $this->display();
     }
 
+    //运算符
+    public function test11(){
+        //定义两个变量
+        $a = 100;
+        $b = 10;
+        //传递给模板
+        $this->assign('a',$a);
+        $this->assign('b',$b);
+        $this->display();
+    }
+
+    //展示头部
+    public function header(){
+        //展示模板
+        $this->display();
+    }
+
+    //展示body
+    public function body(){
+        //展示模板
+        $this->display();
+    }
+
+    //展示底部
+    public function footer(){
+        //展示模板
+        $this->display();
+    }
+
+    //数组遍历
+    public function test12(){
+        //定义一维数组
+        $arr1 = array('西游记','三国','水浒');
+
+        //定义二维数组
+        $arr2 = array(
+            array('白骨精','大师兄','二师兄'),
+            array('诸葛亮','张飞','关羽'),
+            array('李逵','戴宗','林冲'),
+        );
+
+        $this->assign('arr1',$arr1);
+        $this->assign('arr2',$arr2);
+        $this->display();
+    }
+
+    /*if标签
+     * 在php输出今天的星期数字，
+     * 然后传递给模板，在模板中使用if判断今天是星期几？
+     * */
+    public function test13(){
+        $day = date('w',time());
+        $this->assign('day',$day);
+        $this->display();
+    }
+
+    //php标签在模板中的使用
+    public function test14(){
+        $this->display();
+    }
+
     public function index(){
         echo 'Admin分组 Test控制器 index方法';
     }

@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>系统变量</title>
+</head>
+<body>
+$arr1数据：<hr/>
+<volist name="arr1" id="item">
+    {$item}<br/>
+</volist>
+<hr/>
+<hr/>
+$arr2数据：<hr/>
+<volist name="arr2" id="item">
+    <volist name="item" id="son">
+         {$son} -
+    </volist>
+    <br/>
+</volist>
+<hr/>
+foreach:
+<foreach name="arr1" item="item">
+    {$item}-
+</foreach>
+<hr/>
+<foreach name="arr2" item="item">
+    {$item[0]}-{$item[1]}-{$item[2]}<br/>
+</foreach>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>
