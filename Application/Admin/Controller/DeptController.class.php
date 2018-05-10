@@ -80,6 +80,19 @@ class DeptController extends Controller{//展示实例化的结果
 
         dump($result);
     }
+
+    //删除操作
+    public function shanchu(){
+        //实例化模型
+        $model = M('Dept');
+        //删除操作
+        //$result = $model->delete();  //false
+
+        $result = $model->delete(12);  //返回受影响的行数
+        $result = $model->delete(11,12);  //删除多个id记录 返回受影响的行数
+        //打印$result
+        dump($result);
+    }
     public function login(){
         //展示模板
         $this->display();
