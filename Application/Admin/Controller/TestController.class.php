@@ -192,6 +192,51 @@ class TestController extends Controller
         echo G('start','end','m');
     }
 
+    //AR模式增加操作
+    public function test17(){
+        //第一个映射：类映射表（类关联表）
+        $model = M('Dept');
+        //属性映射到字段
+        $model->name = '技术部';
+        $model->pid = '0';
+        $model->sort = '10';
+        $model->remark = '技术部门最屌';
+        //第三个映射：实例映射记录
+        $result = $model->add();//没有参数
+        dump($result);
+    }
+
+    //AR模式的修改操作
+    public function test18(){
+        //实例化模型
+        $model = M('Dept');
+        //属性映射到字段
+        $model->pid = 0;
+        $model->remark = '技术部是最叼的部门~~~';
+        $model->id = 13; //确定主键信息
+        $result = $model->save();
+        dump($result);
+    }
+
+    //AR模式删除操作
+    public function test19(){
+        $model = M('Dept');
+        //指定主键信息
+        $model->id='62';
+        //$model->id='62,126,23';
+        $result = $model->delete();
+        dump($result);  //返回结果，返回被影响的行数
+    }
+
+    //AR模式可以不指定主键信息
+    public function test20(){
+        $model = M('Dept');
+        $re = $model->find('13');
+        dump($re);
+        $model->pid = 1;
+        $re = $model->save();
+        dump($re);
+    }
     public function index(){
         echo 'Admin分组 Test控制器 index方法';
     }

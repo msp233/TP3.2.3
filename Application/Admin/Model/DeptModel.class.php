@@ -12,6 +12,9 @@ use Think\Model;
 
 //声明模型并且继承父类模型
 class DeptModel extends Model{
+    public $name = '';
+    public $pid = 0;
+    public $sort = 50;
 
 }
 
