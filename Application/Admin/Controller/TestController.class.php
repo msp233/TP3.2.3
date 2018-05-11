@@ -168,6 +168,30 @@ class TestController extends Controller
         $this->display();
     }
 
+    //sql 调试
+    public function test15(){
+        //实例化模型
+        $model = D('Dept');
+        $data = $model->select();
+        echo $model->getLastSql();
+    }
+
+    //使用G方法来统计某段代码开销
+    public function test16(){
+        G('start');
+        for($i=0 ; $i<100;$i++){
+            for($n=0;$n<100;$n++){
+                for($m=0;$m<100;$m++){
+                    for($x=0;$x<100;$x++){
+                        $i*$n*$m*$x;
+                    }
+                }
+            }
+        }
+        G('end');
+        echo G('start','end','m');
+    }
+
     public function index(){
         echo 'Admin分组 Test控制器 index方法';
     }

@@ -72,12 +72,13 @@ class DeptController extends Controller{//展示实例化的结果
         //select部门
         //$result = $model->select(); //查询全部  返回二维数组
         //$result = $model->select(1);  //指定id  返回二维数组
-        //$result = $model->select('1,2');  //指定id集合  返回二维数组
+        $result = $model->select('1,2');  //指定id集合  返回二维数组
 
         //find部分
         //$result = $model->find();     //limit 1  返回一维数组
-        $result = $model->find(11);     //指定id  返回一维数组
-
+        //$result = $model->find('11');     //指定id  返回一维数组
+        $sql = $model->getLastSql();
+        dump($sql);
         dump($result);
     }
 
