@@ -262,12 +262,342 @@ public function test20(){
 - order
 表示按照指定的字段进行指定的排序
 - group
-表示安扎奥指定的字段进行分组查询
-- 特别说明
+表示按照指定的字段进行分组查询
+
+## 1、where方法
+作用：限制查询的条件。  
+在原生的sql语句中，select字段 from表 where条件  
+
+在ThinkPHP中系统封装了一个where方法来实现在原生的sql语句中where效果。  
+语法：  
+$model->where(条件表达式);       //在ThinkPHP中条件表达式支持字符串形式也支持数组形式,推荐使用字符串形式。
+$model->CURD操作;     //
+
+eg:
+```
+$model->where(array('id'=>1); 
+```
+案例：使用where方法查询id大于3的数据  
+
+```
+//where方法
+public function test21(){
+    $model = M('Dept');
+    $model->where('id>3'); //条件where id>3
+    $re = $model->select();
+    dump($re);
+}
+```
+回忆：在mysql中除了where子句之外，还有一个语法格式也能限制查询条件，这个语法是having语法。  
+问题：where字句和having子句有什么区别？  
+答：两个语句都表示限制查询条件，但是意义上有差异，**where表示限制查询条件，但是要求条件中的字段必须是数据表中存在的字段；
+而having要求条件中的字段必须是结果集中存在的。**  
+
+## 2、limit方法
+作用：限制输出的条数。（典型的应用：数据分页）  
+在原生的sql语句中，**select 字段 from 表 where limit 限制的条数；**  
+
+在ThinkPHP中，系统提供了limit方法来实现原生的sql语句中限制条数的效果：  
+- $model->limit(n);     //n表示大于0的数字，表示输出表中的前n行
+- $model->limit(起始位置,偏移量/长度);   //表示从第起始位置开始，往后查询指定长度的记录数，在实际使用的时候，该方法还支持写成$model->limit('起始位置,偏移量');（参数是一个带逗号的字符串整体）
+
+案例：使用limit语法格式来实现表中的数据限制
+```
+//limit方法
+public function test22(){
+    $model = M('Dept');
+    $re = $model->where('id>=1')->limit(1,2)->select();  //数据下标从0开始，limit1 是从第二条数据开始
+    dump($re);
+}
+```
+
+sql语句：
+```
+SELECT * FROM `sp_dept` WHERE ( id>=1 ) LIMIT 1,2
+```
+
+返回：
+```
+array (size=2)
+  0 => 
+    array (size=5)
+      'id' => string '2' (length=1)
+      'name' => string '财务部' (length=9)
+      'pid' => string '0' (length=1)
+      'sort' => string '22' (length=2)
+      'remark' => string '我们是财神^_^' (length=18)
+  1 => 
+    array (size=5)
+      'id' => string '11' (length=2)
+      'name' => string '公关部' (length=9)
+      'pid' => string '0' (length=1)
+      'sort' => string '3' (length=1)
+      'remark' => string '公共关系维护' (length=18)
+```
+
+后期使用的分页效果，其实就是limit的第二种语法格式。  
+
+## 3、field方法
+作用：限制输出的结果集字段。  
+语法：
+`$model->field('字段1,字段2 as 别名,字段3...);     //参数也就是select之后到from之前的那一串字符串。`  
+案例：使用field方法来查询部门表中的数据，只要显示id和name就可以。  
+原生的sql：select id name from oa_dept;
+
+```
+//field方法
+public function test23(){
+    $model = M('Dept');
+    $re = $model->field('id,name as 部门名称')->where('id>1')->limit(0,3)->select();
+    dump($re);
+}
+```
+sql语句：
+```
+SELECT `id`,name as 部门名称 FROM `sp_dept` WHERE ( id>1 ) LIMIT 0,3
+```
+结果：
+```
+array (size=3)
+  0 => 
+    array (size=2)
+      'id' => string '2' (length=1)
+      '部门名称' => string '财务部' (length=9)
+  1 => 
+    array (size=2)
+      'id' => string '11' (length=2)
+      '部门名称' => string '公关部' (length=9)
+  2 => 
+    array (size=2)
+      'id' => string '12' (length=2)
+      '部门名称' => string '总裁办' (length=9)
+```
+
+## 4、order方法
+作用：指按照==指定的字段==进行==指定规则==的排序
+在原生的sql语法中使用是：order by 字段 排序规则（升序asc/降序desc）。  
+语法：
+$model->order('字段名 排序规则');  
+案例：使用order方法查询部门表中的数据，并且按照id进行降序排列。  
+原生的sql ： select * from sp_dept order by id desc;
+
+```
+//order方法
+    public function test24(){
+        $model = M('Dept');
+        $re = $model->field('id,name as 部门名称')->where('id>=2')->order('id desc')->limit(0,3)->select();   //desc 降序 
+        dump($re);
+    }
+```
+```
+SELECT `id`,name as 部门名称 FROM `sp_dept` WHERE ( id>=2 ) ORDER BY id desc LIMIT 0,3
+```
+## 5、group方法
+作用：分组查询。
+在ThinkPHP中group分组可以使用group方法来实现：
+$model->group('字段名');  
+
+案例：使用group的方法去查询部门表，要求查询出部门名称和出现的次数。
+原生sql： 
+select name as 部门名称,count(*) as 出现次数 from sp_dept group by name;
+```
+//group方法
+public function test25(){
+    $model = M('Dept');
+    $re = $model->field('name as 部门名称,count(*) as 出现次数')->group('name')->select();
+    dump($re);
+}
+```
+
+输出结果：
+```
+array (size=5)
+  0 => 
+    array (size=2)
+      '部门名称' => string '人事部' (length=9)
+      '出现次数' => string '1' (length=1)
+  1 => 
+    array (size=2)
+      '部门名称' => string '公关部' (length=9)
+      '出现次数' => string '1' (length=1)
+  2 => 
+    array (size=2)
+      '部门名称' => string '总裁办' (length=9)
+      '出现次数' => string '1' (length=1)
+  3 => 
+    array (size=2)
+      '部门名称' => string '技术部' (length=9)
+      '出现次数' => string '1' (length=1)
+  4 => 
+    array (size=2)
+      '部门名称' => string '财务部' (length=9)
+      '出现次数' => string '1' (length=1)
+```
+
+__call  调用对象中不存在的方法时，调用__call 魔术方法  
+
+# 四、连贯操作（重点）
+
+连贯操作：所谓连贯操作就是将辅助方法全部卸载一行上的方法，这样的形式叫做连贯操作。  
+
+也就是如下的形式：  
+`$model->where()->limit()->order()->field()->select();`  
+
+注意点：辅助方法的顺序，在连贯操作中没有要求，只要符合模型在最前面，CURD方法在最后面即可。  
+
+案例：将上述第五个辅助方法的案例代码用连贯操作的形式改写：  
+```
+//group方法
+public function test25(){
+    $model = M('Dept');
+    $re = $model->field('name as 部门名称,count(*) as 出现次数')->group('name')->select();
+    dump($re);
+}
+``` 
+
+问：连贯操作上的辅助方法为什么可以写在一行上呢？
+答：原因就是每一个辅助方法最后的返回值都是$this，而$this是指当前的模型类，由模型类去调用后续的辅助方法，
+这个是行得通的。这也是为什么要求CURD方法必须放在最后的原因。  
+
+**在以后的开发过程中，不管是自己写的代码还是别人写的代码，都会遵循使用连贯操作的形式来替代每一个辅助方法单独一行的写法。**  
+
+# 五、ThinkPHP中的统计查询
+在ThinkPHP中系统提供了一下几个查询方法的使用，方便在后期需要做统计的使用。
+- count()  表示查询表中总的记录数
+- max()  查询某个字段的最大值
+- min()  查询某个字段的最小值
+- avg()  查询某个字段的平均值
+- sum()  求出某个字段的总和
+
+## 1、count方法
+**语法：$model->[where()->]count();**  
+案例：查询出部门表中总的记录数  
+```
+//count方法
+public function test26(){
+    $model = M('Dept');
+    $count = $model->count();
+    dump($count);
+}
+```
+追踪信息的sql语法：
+```
+SELECT COUNT(*) AS tp_count FROM `sp_dept` LIMIT 1
+```
+返回值是字符形式`string '5' (length=1)` 5
+
+## 2、max方法
+语法：
+$model->max('字段名');  
+案例：查询部门表中id最大的部门的id。
+在以后实际开发的时候有一个应用：**通过max方法查询最后注册的会员id**。  
+```
+//max 查询部门表中id最大的部门的id
+    public function test27(){
+        $model = M('Dept');
+        $re = $model->max('id');
+        dump($re);
+    }
+```
+追踪信息的sql：
+```
+SELECT MAX(id) AS tp_max FROM `sp_dept` LIMIT 1
+```
+返回输出：`string '13'`
+
+## 3、min方法
+语法：$model->min('字段名');  
+案例：使用min方法查询部门表中id最小的信息。  
+在以后的使用也有一个典型的应用：查询最早注册的会员id。  
+```
+// 查询部门表中id最小的部门的id
+public function test28(){
+    $model = M('Dept');
+    $min = $model->min('id');
+    dump($min);
+}
+```
+sql语句：
+```
+SELECT MIN(id) AS tp_min FROM `sp_dept` LIMIT 1
+```
+返回输出结果：`string'1'`
+
+## 4、avg方法
+语法： $model->avg('字段名');  
+案例：求出部门中id的平均值。  
+一般用于求取工资、年龄的平均值
+```
+//查询部门表中id平均值
+    public function test29(){
+        $model = M('Dept');
+        $avg = $model->avg('id');
+        dump($avg);
+    }
+```
+sql语句：
+```
+SELECT AVG(id) AS tp_avg FROM `sp_dept` LIMIT 1
+```
+输出返回值：`string '7.8000'`
+
+## 5、sum方法
+语法：$model->model('字段名')
+案例：查询部门表中id的总和
+```
+//查询部门表id总和
+public function test30(){
+    $model = M('Dept');
+    $sum = $model->sum('id');
+    dump($sum);
+}
+```
+ sql语句：
+ ```
+ SELECT SUM(id) AS tp_sum FROM `sp_dept` LIMIT 1 
+ ```
+ 
+ 输出返回值：`string '39'`
+
+# 六、扩展（1）
+## 1、fetchSql
+前面我们介绍了sql调试的一个方法 getLastSql或者别名_sql(),但是这个方法要求最后一条成功执行的sql，
+所以如果那这个方法来调试sql，只能调试逻辑错误，并不能拿来调试语法错误，所以这里给大家介绍一个新的sql调试方法，
+fetchSql()。  
+语法：  
+$model->where()->limit()...->order()->fetchSql(true)->CURD操作;  
+
+fetchSql方法使用的时候可以完全看作是一个辅助方法，所以要求必须在model之后，在CURD操作之前，顺序无所谓。
+FetchSql方法只能在ThinkPHP3.2.3版本之后使用。
+
+```
+ //fetchSql
+    public function test31(){
+        $model = M('Dept');
+        $re = $model->field('id,name as 部门名称')->where('id>=2')->order('id desc')->fetchSql(true)->limit(0,10)->select();  //desc 降序
+        dump($re);
+    }
+```
+
+**跟踪信息，sql不执行**  
+返回值：
+```
+string 'SELECT `id`,`name`,dddd as 部门名称 FROM `sp_dept` WHERE ( id>=2adfadf ) ORDER BY id desc LIMIT 0,10  '
+```
+说明：通过跟踪信息和返回值，我们可以发现，使用fetchSql之后原有的连贯操作没有被执行（在跟踪信息中没有sql显示），
+而是直接将连贯操作的语法组成的sql语句给返回。  
+
+# 七、综合案例
+
+## 1、后台首页
+
+
+
+
 
 
 ```
-day03 -> 7 -> 04:37
+day03 -> 16 -> 04:42
 ```
 
 

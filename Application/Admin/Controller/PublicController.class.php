@@ -18,4 +18,10 @@ class PublicController extends Controller{
         //dump($re);
 
     }
+    public function index(){
+        $this->display();
+    }
+    public function index_v148b2(){
+        $this->display();
+    }
 }

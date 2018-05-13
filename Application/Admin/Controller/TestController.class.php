@@ -237,7 +237,133 @@ class TestController extends Controller
         $re = $model->save();
         dump($re);
     }
+
+    //where方法
+    public function test21(){
+        $model = M('Dept');
+        $model->where('id>3');  //条件where id>3
+        $re = $model->select();
+        dump($re);
+    }
+
+    //limit方法
+    public function test22(){
+        //实例化模型
+        $model = M('Dept');
+        //限制记录 查询
+        $re = $model->where('id>=1')->limit(1,2)->select();
+        dump($re);
+    }
+
+    //field方法
+    public function test23(){
+        $model = M('Dept');
+        $re = $model->field('id,name as 部门名称')->where('id>1')->limit(1,3)->select();
+        dump($re);
+    }
+
+    //order方法
+    public function test24(){
+        $model = M('Dept');
+        $re = $model->field('id,name as 部门名称')->where('id>=2')->order('id desc')->limit(0,10)->select();  //desc 降序
+        dump($re);
+    }
+
+    //group方法
+    public function test25(){
+        $model = M('Dept');
+        $re = $model->field('name as 部门名称,count(*) as 出现次数')->group('name')->select();
+        dump($re);
+    }
+
+    //count方法 查询出部门表中总的记录数
+    public function test26(){
+        $model = M('Dept');
+        $count = $model->count();
+        dump($count);
+    }
+
+    //max 查询部门表中id最大的部门的id
+    public function test27(){
+        $model = M('Dept');
+        $max = $model->max('id');
+        dump($max);
+    }
+
+    //min  查询部门表中id最小的部门的id
+    public function test28(){
+        $model = M('Dept');
+        $min = $model->min('id');
+        dump($min);
+    }
+
+    //avg 查询部门表中id平均值
+    public function test29(){
+        $model = M('Dept');
+        $avg = $model->avg('id');
+        dump($avg);
+    }
+
+    //sum 查询部门表id总和
+    public function test30(){
+        $model = M('Dept');
+        $sum = $model->sum('id');
+        dump($sum);
+    }
+
+    //fetchSql
+    public function test31(){
+        $model = M('Dept');
+        $re = $model->field('id,name as 部门名称')->where('id>=2')->order('id desc')->fetchSql(true)->limit(0,10)->select();  //desc 降序
+        dump($re);
+    }
+
     public function index(){
         echo 'Admin分组 Test控制器 index方法';
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 }
