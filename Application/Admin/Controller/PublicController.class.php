@@ -21,7 +21,4 @@ class PublicController extends Controller{
     public function index(){
         $this->display();
     }
-    public function index_v148b2(){
-        $this->display();
-    }
 }

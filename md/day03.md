@@ -590,6 +590,169 @@ string 'SELECT `id`,`name`,dddd as 部门名称 FROM `sp_dept` WHERE ( id>=2adfa
 # 七、综合案例
 
 ## 1、后台首页
+1. 写控制器
+Application/Admin/Controller/IndexController.class.php  
+```
+public function index(){
+    $this->display();
+}
+public function home(){
+    $this->display();
+}
+```
+2. 复制index.html、home.html文件到 Application/Admin/View/Index/ 目录下
+
+3. 修改两个模板文件中静态资源文件的引入路径
+
+4. 纠正home页面引入路径
+```
+src="__CONTROLLER__/home"
+```
+
+另外一种方式：
+在模板中也可以使用U方法来指定URL地址。  
+U方法在模板中使用方法，需要注意，需要在其外面加上{:xxxxxx}
+```
+src="{:U('home')}"
+```
+
+## 2、部门管理
+
+### 2.1、设计二级导航
+
+- 先复制有二级菜单的代码，将其粘贴到想添加二级菜单处。
+- 修改二级菜单栏目名称及跳转地址{:U(showList)}、{:U(add)}
+
+### 2.2、实现部门的添加功能
+控制器：DeptController.class.php 已经存在
+方法： add
+模板文件： add.html
+1. 创建add方法，展示模板
+2. 复制模板文件add.html 到指定位置
+./Application/Admin/View/Dept/add.html
+3. 修改模板文件中静态资源文件的引入路径
+__ADMIN__
+4. 表单中大部分地方都没有问题，只有一个地方，就是提交按钮和清空按钮，它是a标签，但是修改成input后，央视会消失，
+所以我们可以通过jQuery的方法来保证样式和表单的提交。
+编写jQuery代码：
+```
+//jQuery代码  定义载入事件
+$(function(){
+    //给确定按钮绑定一个点击事件
+    $('.confirm').on('click',function(){
+        //事件的处理程序
+        $('form').submit();
+    });
+    //给清空内容按钮绑定一个点击事件
+    $('.clear').on('click',function(){
+        //事件的处理程序Q
+        //juery对象转换成DOM对象两种方法
+        $('form')[0].reset();
+        //$('form').get(0).reset();
+    });
+});
+```
+5. 展示上级部门信息
+```
+//add方法
+public function add(){
+    //查询出顶级部门
+    $model = M('Dept');
+    $data = $model->where('pid = 0')->select();
+    //展示数据
+    $this->assign('data',$data);
+    //展示模板
+    $this->display();
+}
+```
+展示在模板中：  
+分析：因为select的返回值是二维数组，所以需要遍历操作
+```
+<select name="pid">
+    <option value="0">顶级部门</option>
+    <volist name="data" id="vol">
+        <option value="{$vol.id}">{$vol.name}</option>
+    </volist>
+</select>
+```
+6. 表单信息提交的操作
+改写add方法，判断是否是post请求，如果是，则处理表单的提交，如果不是则展示模板。  
+扩展：如何判断请求是否是post？  
+答：要是以前，我们可以使用if($_POST)来判断，但是在ThinkPHP中，系统为我们封装了几个比较常用的常量，
+可以直接用常量来判断你，常见常量如下：
+IS_POST 如果请求是post，则IS_POST的值是true，否则是false  
+IS_GET  
+IS_AJAX 如果请求是ajax，则IS_AJAX的值是true，否则是false  
+IS_CGI  
+IS_PUT  
+
+关于数据接收的说明：  
+在之前我们使用的时候$_POST来接收数据，在ThinkPHP中，我们可以使用I方法（快速方法）来接收数据，
+I方法可以接收任何类型的输入（post、get、request、put等等），
+并且系统默认自带防sql注入的方法（使用php内置的函数htmlspecialchars)。  
+
+语法：  
+```
+I('变量类型.变量名/修饰符',['默认值'],['过滤方法或正则'],['额外数据源'])
+```
+变量类型：
+```
+ get  获取GET参数  
+ post  获取POST参数  
+ param  自动判断请求类型获取GET、POST或者PUT参数  
+ request  获取REQUEST 参数  
+ put  获取PUT 参数  
+ session  获取 $_SESSION 参数  
+ cookie  获取 $_COOKIE 参数  
+ server  获取 $_SERVER 参数  
+ globals  获取 $GLOBALS参数  
+ path  获取 PATHINFO模式的URL参数  
+ data  获取 其他类型的参数，需要配合额外数据源参数 
+```
+默认值：是当使用过滤方法之后，原先的内容如果变成了空字符串，则会使用默认值来代替。  
+过滤方法：是对ThinkPHP默认提供的htmlspecialchars的补充，函数名可以是php内置的，也可以是函数库中的。  
+
+额外的说明：如果想接收整个数组，则可以不写变量名，写成`I('get.')`    
+
+```
+//add方法
+public function add(){
+    //判断请求类型
+    //$_POST
+    if(IS_POST){
+        //处理表单提交
+        //$post = $_POST;
+        $post = I('post.');
+        dump($post);
+        $model = M('Dept');
+        $re = $model->add($post);
+
+        if($re){
+            $this->success('添加成功',U('showList'),3);
+        }else{
+            $this->error('添加失败');
+        }
+
+    }else{
+        //查询出顶级部门
+        $model = M('Dept');
+        $data = $model->where('pid = 0')->select();
+        //展示数据
+        $this->assign('data',$data);
+        //展示模板
+        $this->display();
+    }
+}
+```
+
+
+
+
+
+
+
+
+
 
 
 
@@ -597,7 +760,7 @@ string 'SELECT `id`,`name`,dddd as 部门名称 FROM `sp_dept` WHERE ( id>=2adfa
 
 
 ```
-day03 -> 16 -> 04:42
+day03 -> 17 -> 35:26
 ```
 
 

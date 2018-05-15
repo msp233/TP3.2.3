@@ -9,6 +9,41 @@ namespace Admin\Controller;
 use Think\Controller;
 use Admin\Model as Model;
 class DeptController extends Controller{//展示实例化的结果
+    //add方法
+    public function add(){
+        //判断请求类型
+        //$_POST
+        if(IS_POST){
+            //处理表单提交
+            //$post = $_POST;
+            //$post = I('post.');
+            //dump($post);
+            $model = M('Dept');
+            //数据对象的创建
+            $data = $model->create();//不传递参数则接收post数据
+            //$re = $model->add($post);
+            $re = $model->add($data);
+            //注意：create()返回值可以不接收，接收一般为了打印出来看数据，
+            //add()也可以不传递$data参数,add不传递参数，表示使用数据对象的值
+
+            if($re){
+                $this->success('添加成功',U('showList'),3);
+            }else{
+                $this->error('添加失败');
+            }
+
+        }else{
+            //查询出顶级部门
+            $model = M('Dept');
+            $data = $model->where('pid = 0')->select();
+            //展示数据
+            $this->assign('data',$data);
+            //展示模板
+            $this->display();
+        }
+    }
+
+
     public function shilihua(){
         //普通实例化方法
         //$model = new Model\DeptModel();
