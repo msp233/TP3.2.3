@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>add 添加</title>
+</head>
+<body>
+<form>
+    <table>
+        <tr>
+            <td>部门名称</td>
+            <td><input name=""/></td>
+        </tr>
+        <tr>
+            <td>上级部门</td>
+            <td>
+                <select name="pid">
+                    <option value="0">顶级部门</option>
+                    <volist name="arr" id="vo">
+                        <option value="{$vo.id}">{$vo.name}</option>
+                    </volist>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td>排序</td>
+            <td><input name="sort"/></td>
+        </tr>
+        <tr>
+            <td>备注</td>
+            <td><textarea name="remark"/></td>
+        </tr>
+        <tr>
+            <td><submit>确定</submit></td>
+            <td><reset>清空</reset></td>
+        </tr>
+    </table>
+</form>
+</body>
+</html>

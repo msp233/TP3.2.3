@@ -18,14 +18,18 @@ class DeptController extends Controller{//展示实例化的结果
             //$post = $_POST;
             //$post = I('post.');
             //dump($post);
-            $model = M('Dept');
+            $model = D('Dept');
             //数据对象的创建
             $data = $model->create();//不传递参数则接收post数据
+            if($data){
+
+            }else{
+                $model->getError();
+            }
             //$re = $model->add($post);
             $re = $model->add($data);
             //注意：create()返回值可以不接收，接收一般为了打印出来看数据，
             //add()也可以不传递$data参数,add不传递参数，表示使用数据对象的值
-
             if($re){
                 $this->success('添加成功',U('showList'),3);
             }else{
@@ -41,6 +45,12 @@ class DeptController extends Controller{//展示实例化的结果
             //展示模板
             $this->display();
         }
+    }
+    public function edit(){
+        $this->display();
+    }
+    public function lister(){
+        $this->display();
     }
 
 

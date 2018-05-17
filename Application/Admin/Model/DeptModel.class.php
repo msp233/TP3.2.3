@@ -12,9 +12,33 @@ use Think\Model;
 
 //声明模型并且继承父类模型
 class DeptModel extends Model{
-    public $name = '';
-    public $pid = 0;
-    public $sort = 50;
+    //自动验证定义
+    protected $_validate = array(
+        //针对部门名称的规则
+        array('name','require','部门名称不能为空'),
+        array('name','','部门名称已经存在',0,'unique'),
+        //array('sort','number','排序必须是数字！'),
+        //使用函数的方式来验证排序字段必须为数字
+        array('sort','is_numeric','排序必须是数字！',0,'function'),
+    );
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 }
 
