@@ -12,6 +12,15 @@ use Think\Model;
 
 //声明模型并且继承父类模型
 class DeptModel extends Model{
+    //开启批量验证
+    //protected $patchValidate = true;
+
+    //字段映射定义
+    protected $_map = array(
+        //映射规则  表单name值 => 数据表字段名
+        'abc' => 'name',
+    );
+
     //自动验证定义
     protected $_validate = array(
         //针对部门名称的规则

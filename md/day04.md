@@ -147,6 +147,77 @@ unique  验证是否唯一，系统会根据字段目前的值查询数据库来
 输出用户提示信息：  
 $model->getError();
 
+```
+$model = D('Dept');
+if($model->create()){
+    $re = $model->add($data);
+    if($re){
+        $this->success('添加成功',U('lister'),3);
+    }else{
+        $this->error('添加失败');
+    }
+}else{
+    $this->error($model->getError());
+}
+```
+
+批量验证：  
+需要配置一个成员属性：$patchValidate设置成true
+此时批量验证返回的错误信息是一个数组格式
+```
+array (size=2)
+  'name' => string '部门名称不能为空' (length=24)
+  'sort' => string '排序必须是数字！' (length=24)
+```
+
+## 3、字段映射
+映射就是表示一个对应关系。
+应用场景：在目前表单中的name值和数据表中的字段名都是一样的，有一些人可能通过当前功能和表单的name值
+猜测出数据表的名字和表结构，后期就可能会找到系统的漏洞对系统的进行攻击，系统的安全性存在威胁。  
+因此我们可以使用一个障眼法，将name值来随机制定，name值就和表中的字段不一致，那样别人就猜不出来了。  
+
+因为如果字段和数据表中的字段不匹配，在操作的时候会被系统过滤，所以需要有一个对照列表，告知系统，不对应的name字段是数据表中的字段。  
+
+字段映射和自动验证一样，没有语法，只有规则定义：
+成员属性： $_map  
+```
+protected %_map = array();   //字段映射定义
+```
+因为成员属性是父类模型中的，所以不能在父类中直接修改，需要在自定义模型中修改。  
+```
+//字段映射定义
+protected $_map = array(
+    //映射规则  表单name值 => 数据表字段名
+    'abc' => 'name',
+);
+```
+因为数据对象中使用了字段映射的检查，所以，此处如果需要使用字段映射，
+则必须要使用数据对象的创建方法接收数据($model->create())。  
+通过修改前端表单中的name值进行测试
+```
+<input type="text" name="abc" class="form-control">
+```
+`dump($model->create())`测试结果：  
+```
+array (size=3)
+  'pid' => string '0' (length=1)
+  'sort' => string '23' (length=2)
+  'remark' => string '                                            ' (length=44)
+```
+```
+array (size=4)
+  'pid' => string '0' (length=1)
+  'sort' => string '23' (length=2)
+  'remark' => string '                                            ' (length=44)
+  'name' => string '前端df' (length=8)
+```
+在使用字段映射后，被映射的字段会被放到数组的最后，按照字段映射的先后顺序进行排列。  
+
+## 4、特殊表的实例化操作
+
+
+
+
 
 
 
@@ -159,7 +230,7 @@ $model->getError();
 
 
  ```
- day04 -> 03 -> 14:49
+ day04 -> 06 -> 0:00
  ```
  
  

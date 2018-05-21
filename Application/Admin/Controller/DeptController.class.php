@@ -20,7 +20,7 @@ class DeptController extends Controller{//展示实例化的结果
             //dump($post);
             $model = D('Dept');
             //数据对象的创建
-            $data = $model->create();//不传递参数则接收post数据
+            //$data = $model->create();//不传递参数则接收post数据
             //$re = $model->add($post);
             //var_dump($data);die;
             //$re = $model->add($data);
@@ -28,7 +28,8 @@ class DeptController extends Controller{//展示实例化的结果
             //dump($re);die;
             //注意：create()返回值可以不接收，接收一般为了打印出来看数据，
             //add()也可以不传递$data参数,add不传递参数，表示使用数据对象的值
-            if($model->create()){
+            if($data = $model->create()){
+                dump($data);die;
                 $re = $model->add($data);
                 if($re){
                     $this->success('添加成功',U('lister'),3);
