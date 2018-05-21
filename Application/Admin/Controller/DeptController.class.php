@@ -21,21 +21,24 @@ class DeptController extends Controller{//展示实例化的结果
             $model = D('Dept');
             //数据对象的创建
             $data = $model->create();//不传递参数则接收post数据
-            if($data){
-
-            }else{
-                $model->getError();
-            }
             //$re = $model->add($post);
-            $re = $model->add($data);
+            //var_dump($data);die;
+            //$re = $model->add($data);
+            //$re = $model->fetchSql(true)->add($data);
+            //dump($re);die;
             //注意：create()返回值可以不接收，接收一般为了打印出来看数据，
             //add()也可以不传递$data参数,add不传递参数，表示使用数据对象的值
-            if($re){
-                $this->success('添加成功',U('showList'),3);
-            }else{
-                $this->error('添加失败');
-            }
+            if($model->create()){
+                $re = $model->add($data);
+                if($re){
+                    $this->success('添加成功',U('lister'),3);
+                }else{
+                    $this->error('添加失败');
+                }
 
+            }else{
+                $this->error($model->getError());
+            }
         }else{
             //查询出顶级部门
             $model = M('Dept');
@@ -46,10 +49,15 @@ class DeptController extends Controller{//展示实例化的结果
             $this->display();
         }
     }
-    public function edit(){
+
+    public function lister(){
+        $model = D('Dept');
+        $data = $model->field('id,pid,name,remark')->select();
+        $this->assign('data',$data);
         $this->display();
     }
-    public function lister(){
+
+    public function edit(){
         $this->display();
     }
 
