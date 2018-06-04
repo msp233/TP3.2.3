@@ -18,6 +18,9 @@ class PublicController extends Controller{
         //dump($re);
 
     }
+    public function home(){
+        $this->display();
+    }
     public function index(){
         $this->display();
     }
