@@ -28,6 +28,7 @@ class DeptController extends Controller{//展示实例化的结果
             //dump($re);die;
             //注意：create()返回值可以不接收，接收一般为了打印出来看数据，
             //add()也可以不传递$data参数,add不传递参数，表示使用数据对象的值
+            //dump(I('post.'));die;
             if($data = $model->create()){
                 $re = $model->add($data);
                 if($re){
