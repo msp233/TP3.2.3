@@ -318,6 +318,45 @@ class TestController extends Controller
         dump($re);
     }
 
+    //特殊类的实例化
+    public function test32(){
+        //实例化
+        $model = D('Szphp');
+        var_dump($model);
+    }
+
+    //session支持
+    public function test33(){
+        //1、设置
+        session('name','张三');
+        session('name2','李四');
+        //打印
+        dump($_SESSION);
+        //2、读取单个
+        $val = session('name');
+        dump($val);
+        //3、清空单个
+        session('name',null);
+        dump($_SESSION);
+        //4、全部删除
+        session('abc','abc');
+        session(null);
+        dump($_SESSION);
+        //5、读取全部
+        session('name','张三');
+        session('name2','李四');
+        session('abc','abc');
+        dump(session());
+        //6、判断session是否存在
+        dump(session('?name'));
+
+    }
+
+    //cookie支持
+    public function test34(){
+        dump(cookie());
+    }
+
     public function index(){
         echo 'Admin分组 Test控制器 index方法';
     }

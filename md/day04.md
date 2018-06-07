@@ -221,6 +221,58 @@ array (size=4)
 在使用字段映射后，被映射的字段会被放到数组的最后，按照字段映射的先后顺序进行排列。  
 
 ## 4、特殊表的实例化操作
+在实际开发的时候可能会遇到有特殊标的情况，可能表会没有前缀、标的前缀不是在配置文件中定义的前缀。  
+模拟出一张特殊表：  
+表名：szphp  
+
+创建模型文件：  
+`SzphpModel.class.php`  
+```
+<?php
+namespace Admin\Model;
+use Think\Model;
+class SzphpModel extends Model{
+    
+}
+```
+
+```
+1146:Table 'db_oa.sp_szphp' doesn't exist [ SQL语句 ] : SHOW COLUMNS FROM `sp_szphp`
+```
+解决办法：
+```
+protected $trueTableName = 'szphp';
+```
+
+# 二、ThinkPHP中的实用项（2）
+## 1、会话控制
+会话支持一般指的是cookie和session。在PHP核心中有说及php对于cookie和session支持，
+在ThinkPHP中系统为了方便开发的实用，也封装了相应cookie和session方法。
+### 1.1、session的支持
+在ThinkPHP中系统封装了一个方法用来实现对于session的操作：session() （定义在系统函数库文件中functions.php）。
+- session(‘name’,’value’)	 创建一个名为name的session值，值是value
+- $value = session(‘name’)	 读取session中的name元素值，值赋给value
+- session(‘name’,null)		删除名为name元素的值
+- session(null)			删除全部的session元素
+- session()				读取全部的session信息
+- session(‘?name’)		判断名为name的session元素是否存在，如果存在则返回true，如果不存在，则返回false。
+
+案例：在方法中使用session方法session进行操作  
+
+### 1.2、cookie支持
+- cookie(‘name’,’value’)		设置一个名为name的cookie值，值是value
+- cookie(‘name’,’value’,3600)	设置一个名为name的cookie值，值是value，有效期是3600s
+- $value = cookie(‘name’)		读取名为name的cookie赋值给value
+- cookie(‘name’,null)			删除名为name的cookie值
+- cookie(null)				删除全部的cookie（有问题）
+- cookie()					获取全部的cookie
+
+
+
+
+
+
+
 
 
 
