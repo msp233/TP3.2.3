@@ -354,7 +354,18 @@ class TestController extends Controller
 
     //cookie支持
     public function test34(){
+        //获取全部cookie
         dump(cookie());
+        //1、设置没有有效期的cookie
+        cookie('aa','bb');
+        //2、设置带有有效期的cookie
+        cookie('name2','ceshi',3600);
+        //3、获取单个cookie
+        dump(cookie('name2'));
+        //4、清空单个cookie
+        cookie('name2',null);
+        //5、清空全部cookie
+        cookie(null);
     }
 
     public function index(){

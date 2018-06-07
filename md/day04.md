@@ -223,7 +223,7 @@ array (size=4)
 ## 4、特殊表的实例化操作
 在实际开发的时候可能会遇到有特殊标的情况，可能表会没有前缀、标的前缀不是在配置文件中定义的前缀。  
 模拟出一张特殊表：  
-表名：szphp  
+表名：q    szphp  
 
 创建模型文件：  
 `SzphpModel.class.php`  
@@ -266,6 +266,71 @@ protected $trueTableName = 'szphp';
 - cookie(‘name’,null)			删除名为name的cookie值
 - cookie(null)				删除全部的cookie（有问题）
 - cookie()					获取全部的cookie
+
+cookie(null)有问题，  
+改 `functions.php`文件的`cookie()`方法
+ 添加两个 `|| $name == null`
+```
+if (!empty($prefix) || $name == null) {// 如果前缀为空字符串将不作处理直接返回
+    foreach ($_COOKIE as $key => $val) {
+        if (0 === stripos($key, $prefix) || $name == null) {
+            setcookie($key, '', time() - 3600, $config['path'], $config['domain'],$config['secure'],$config['httponly']);
+            unset($_COOKIE[$key]);
+        }
+    }
+}
+```
+
+## 2、文件加载
+文件加载在ThinkPHP中系统提供三个方式。
+
+### 2.1、函数库形式加载
+函数库在ThinkPHP中有三大类：系统函数库文件(functions.php),应用级别函数库文件、分组级别函数库文件。  
+**上述三大类的文件只有系统函数库文件默认是存在的，其他两类默认不存在，需要自行创建；**  
+**上述三大类文件只有系统函数库文件名叫做functions.php，另外两大类文件名叫做function.php。**  
+
+定义好的函数库文件中的函数，在使用的时候遵循php内置函数语法的要求，只要直接写上函数名(参数)，这种形式就可以了。  
+
+说明：  
+1. 不需要引入function.php，系统在执行的时候自动帮我们引入了文件function.php文件；  
+2. 如果函数定义在应用级别的函数库文件中，则能在全部的分组（整个应用）使用；如果函数定义在某个分组的函数库文件中，则只能在当前的分组中使用，否则会报函数未定义。
+
+### 2.2、通过配置项动态加载
+
+在系统的执行流程中有 一个文件会被执行到App.class.php  
+在该方法中执行了一个load_ext_file函数。  
+该方法是在系统函数库文件中定义的：`functions`
+```
+function load_ext_file($path) {
+  // 加载自定义外部文件
+  if($files = C('LOAD_EXT_FILE')) {
+      $files      =  explode(',',$files);
+      foreach ($files as $file){
+          $file   = $path.'Common/'.$file.'.php';
+          if(is_file($file)) include $file;
+      }
+  }
+  ...
+}
+```
+
+**扩展：C方法**  
+C方法也是快速方法之一，其作用是操作ThinkPHP中的配置项：  
+C(name,value);			设置配置项name的值，值是value  
+C(name);					读取配置项name的值  
+C();						读取全部的配置项  
+
+**通过代码的阅读，可以发现配置项LOAD_EXT_FILE的配置格式应该是类似于下面这种形式：**
+`LOAD_EXT_FILE	=>	‘abc,cde,efg…’`    
+**而且上述的文件应该是位于应用级别的函数库目录中。**  
+
+配置项：
+在应用级别的配置文件中定义配置项LOAD_EXT_FILE，引入文件`info.php`  
+```
+    //动态加载文件
+    'LOAD_EXT_FILE' => 'info'//包含文件名的字符串，多个文件名用逗号分割
+```
+在应用函数库文件目录中定义一个info.php
 
 
 
