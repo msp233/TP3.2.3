@@ -30,13 +30,13 @@ class DeptController extends Controller{//展示实例化的结果
             //add()也可以不传递$data参数,add不传递参数，表示使用数据对象的值
             //dump(I('post.'));die;
             if($data = $model->create()){
+                $data['up_time'] = time();
                 $re = $model->add($data);
                 if($re){
                     $this->success('添加成功',U('lister'),3);
                 }else{
                     $this->error('添加失败');
                 }
-
             }else{
                 $this->error($model->getError());
             }
@@ -54,12 +54,32 @@ class DeptController extends Controller{//展示实例化的结果
     public function lister(){
         $model = D('Dept');
         $data = $model->field('id,pid,name,sort,remark')->select();
+
         $this->assign('data',$data);
         $this->display();
     }
 
     public function edit(){
-        $this->display();
+        $dept = D('Dept');
+        if(IS_POST){
+            if($data = $dept->create()){
+                $data['up_time'] = time();
+                $re = $dept->where(array('id'=>$data['id']))->save($data);
+                if($re){
+                    $this->success('修改成功',U('lister'),3);
+                }else{
+                    $this->error('修改失败');
+                }
+            }else{
+                $this->error($dept->getError());
+            }
+        }else{
+            $where = array('id'=>I('get.id'));
+            $data = $dept->where($where)->find();
+            $this->assign('data',$data);
+            $this->display();
+        }
+
     }
 
 

@@ -3,16 +3,23 @@
  ## 1、数据对象创建
  数据对象也就是父类模型中的$this->data，上一天我们在使用AR模式时使用了数据对象，
  在模型实例化的时候数据对象还是一个空数组，在后来使用了魔术方法__set来设置了数据对象的值。  
- 
+
+ ```
+ public function __set($name,$value){
+    //设置数据对象属性
+    $this->data[$name] = $value;
+ }
+ ```
 从上述的一个流程中我们可以得出，既然data属性之前是空数组，后期使用的时候需要先给其赋值，  
 也就说明，**在使用数据对象的时候必须先创建数据对象**。而__set 是设置数据对象的一种方法；
 但是这种方式在使用时并不方便，原因是设置一个属性就得写一行代码；
-因此在ThinkPHP中系统还提供另外一种批量设置数据对象的方法，create方法。  
+因此在ThinkPHP中系统还提供另外一种批量设置数据对象的方法，create方法。(默认取post数据)  
 语法：  
  $model->create();
  
  ThinkPHP -> Model.class.php 文件中的create()方法
  ```
+  // 如果没有传值默认取POST数据
  if(empty($data)) {
      $data   =   I('post.');
  }elseif(is_object($data)){
