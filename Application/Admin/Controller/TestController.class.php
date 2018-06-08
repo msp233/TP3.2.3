@@ -368,6 +368,47 @@ class TestController extends Controller
         cookie(null);
     }
 
+    //自动加载
+    //测试load_ext_file引入
+    //文件载入
+    public function test35(){
+        getInfo();
+    }
+
+    //load方法
+    public function test36(){
+        load('@/hello');
+        sayHello('Tom');
+    }
+
+    //常规验证码
+    public function test37(){
+        //清理缓存区
+        ob_end_clean();
+        //配置项
+        $config = array(
+            'UserImgBg' =>  false,          //使用背景图片
+            'fontSize'  =>  100,              // 验证码字体大小(px)
+            'useCurve'  =>  false,            // 是否画混淆曲线
+            'useNoise'  =>  true,            // 是否添加杂点
+            'imageH'    =>  0,               // 验证码图片高度
+            'imageW'    =>  0,               // 验证码图片宽度
+            'length'    =>  4,               // 验证码位数
+        );
+        //实例化验证码类
+        $verify = new \Think\Verify($config);
+        //输出验证码
+        $verify->entry();
+    }
+
+    //中文验证码
+    public function test38(){
+        $cfg = array(
+            'useZh' => true,
+        );
+        $verify = new \Think\Verify($cfg);
+
+    }
     public function index(){
         echo 'Admin分组 Test控制器 index方法';
     }

@@ -325,16 +325,130 @@ C();						读取全部的配置项
 **而且上述的文件应该是位于应用级别的函数库目录中。**  
 
 配置项：
-在应用级别的配置文件中定义配置项LOAD_EXT_FILE，引入文件`info.php`  
+在应用级别的配置文件`functions.php`中定义配置项LOAD_EXT_FILE，引入文件`info.php`  
 ```
     //动态加载文件
     'LOAD_EXT_FILE' => 'info'//包含文件名的字符串，多个文件名用逗号分割
 ```
 在应用函数库文件目录中定义一个info.php
+```
+function getInfo(){
+    //输出phpinfo的信息
+    phpinfo();
+}
+```
+控制器方法中调用
+```
+//自动加载
+//测试load_ext_file引入
+//文件载入
+public function test35(){
+    getInfo();
+}
+```
 
+**上述需要注意的是，同样文件在系统封装的方法中已经进行了引入，所以在使用具体的函数的时候不需要再对文件进行单独的引入，
+只需要像使用函数库文件的形式直接编写需要使用的函数名即传递相应的参数即可。**  
 
+### 2.3、通过load方法加载
+**语法：**`load(‘@/不带后缀的php文件名’);`  
+**需要注意的是，文件必须存在于分组级别的函数库目录中，并且只能用于定义的分组中。**    
 
+**案例：通过自己在分组目录中创建文件hello.php，然后在其中定义一个函数，然后再去使用load方法加载并且使用其中的函数。**  
+目录位置：`Application/admin/Common/
+```
+function sayHello($who){
+    echo 'Hello '.$who.'!';
+}
+```
+在控制器中使用load方法加载hello.php文件：
+```
+//load方法
+public function test36(){
+    load('@/hello');
+    sayHello('Tom');
+}
+```
+说明：上述三个文件的加载方式在实际开发的时候都可以使用，
+但是一般以第一种为主（通过函数库形式自动加载）。其他的仅供参考。
 
+# 三、ThinkPHP中功能类-验证码类
+
+验证码：  
+captcha（全自动识别机器与人类的图灵测试）。  
+常见验证码可以分为三种：
+- 页面上的图片形式
+- 短信验证码
+- 语音验证码。  
+
+在ThinkPHP中，为了提高开发效率，系统封装了一个验证码类：`Verify.class.php`  
+
+## 1、介绍
+方法：
+构造方法：  
+在实例化的时候可以传递一个数组，用于和其成员属性config进行合并，生成新的配置。
+```
+public function __construct($config=array()){
+    $this->config   =   array_merge($this->config, $config);
+}
+```
+Check方法：校验验证码，传递参数，用户输入的验证码
+```
+/**
+ * 验证验证码是否正确
+ * @access public
+ * @param string $code 用户验证码
+ * @param string $id 验证码标识     
+ * @return bool 用户验证码是否正确
+ */
+public function check($code, $id = '') {
+    $key = $this->authcode($this->seKey).$id;
+    // 验证码不能为空
+    $secode = session($key);
+    ......
+```
+Entry方法：输出图片，保存验证码到session中
+```
+/**
+ * 输出验证码并把验证码的值保存的session中
+ * 验证码保存到session的格式为： array('verify_code' => '验证码值', 'verify_time' => '验证码创建时间');
+ * @access public     
+ * @param string $id 要生成验证码的标识   
+ * @return void
+ */
+public function entry($id = '') {
+    // 图片宽(px)
+    $this->imageW || $this->imageW = $this->length*$this->fontSize*1.5 + $this->length*$this->fontSize/2; 
+    // 图片高(px)
+    $this->imageH || $this->imageH = $this->fontSize * 2.5;
+```
+
+## 2、生成常规验证码
+常规验证码是指有数字+大小写字母组成的验证码。  
+**步骤：**  
+1. 实例化验证码类
+2. 输出图片
+```
+//常规验证码
+public function test37(){
+    //清理缓存区
+    ob_end_clean();
+    //配置项
+    $config = array(
+        'UserImgBg' =>  false,          //使用背景图片
+        'fontSize'  =>  25,              // 验证码字体大小(px)
+        'useCurve'  =>  false,            // 是否画混淆曲线
+        'useNoise'  =>  true,            // 是否添加杂点
+        'imageH'    =>  0,               // 验证码图片高度
+        'imageW'    =>  0,               // 验证码图片宽度
+        'length'    =>  4,               // 验证码位数
+    );
+    //实例化验证码类
+    $verify = new \Think\Verify($config);
+    //输出验证码
+    $verify->entry();
+}
+```
 
 
 
@@ -354,7 +468,7 @@ C();						读取全部的配置项
 
 
  ```
- day04 -> 06 -> 0:00
+ day04 -> 10 -> 15:24
  ```
  
  
