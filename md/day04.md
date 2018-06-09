@@ -450,7 +450,78 @@ public function test37(){
 }
 ```
 
+## 3、生成中文验证码
+需要字体文件，字体文件可以在自己的计算机中找到：  
+打开【控制面板】-切换到【大图标】，找到【字体】-搜索‘黑体’-复制【黑体常规】  
 
+复制到zhttfs目录中  
+需要字体文件，字体文件可以在自己的计算机中找到：  
+打开【控制面板】-切换到【大图标】，找到【字体】-搜索‘黑体’-复制【黑体常规】  
+
+复制到zhttfs目录中`/ThinkPHP/Library/Think/Verify/zhttfs` 
+```
+//中文验证码
+public function test38(){
+    //清理缓存区
+    ob_end_clean();
+    //配置
+    $cfg = array(
+        'useZh' => true,//使用中文验证码
+    );
+    $verify = new \Think\Verify($cfg);
+    $verify->entry();
+}
+```
+## 4、补充说明
+关于中文验证码的几点说明：  
+1. 以后在实际开发的时候不到万不得已不要使用中文验证码；
+2. 中文验证码需要中文字体的支持，中文字体可以在自己计算机中找到，当也可以去字体网站下载（比如说站长之家chinaz.com）；
+3. 使用中文验证码必须开启php的扩展mbstring。
+扩展开启：打开php.ini文件，去掉扩展前的分号，保存，重启Apache：
+```
+extension=php_mbstring.dll
+extension=php_curl.dll
+```
+
+# 四、综合案例
+## 1、实现后台登录功能
+控制器：PublicController.class.php  
+模版：login.html  
+方法：login	captcha	checkLogin  
+第一步：在控制器中创建captcha方法，用于输出验证码  
+```
+//captcha方法
+public function captcha(){
+   ob_end_clean();
+   //配置
+   $cfg = array(
+       'UserImgBg' =>  false,          //使用背景图片
+       'fontSize'  =>  25,              // 验证码字体大小(px)
+       'useCurve'  =>  false,            // 是否画混淆曲线
+       'useNoise'  =>  true,            // 是否添加杂点
+       'imageH'    =>  0,               // 验证码图片高度
+       'imageW'    =>  0,               // 验证码图片宽度
+       'length'    =>  4,               // 验证码位数
+   );
+   //实例化验证码类
+   $verify = new \Think\Verify($cfg);
+   //输出验证码
+   $verify->entry();
+}
+```
+第二步：在模版文件login.html中输出验证码
+```
+
+```
+
+
+## 2、完善部门管理功能
+
+### 2.1、完成部门列表展示
+
+### 2.2、完成部门编辑功能
+
+### 2.3、完成部门删除功能
 
 
 
@@ -468,7 +539,7 @@ public function test37(){
 
 
  ```
- day04 -> 10 -> 15:24
+ day04 -> 11 -> 12:18
  ```
  
  

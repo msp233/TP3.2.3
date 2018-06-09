@@ -403,11 +403,14 @@ class TestController extends Controller
 
     //中文验证码
     public function test38(){
+        //清理缓存区
+        ob_end_clean();
+        //配置
         $cfg = array(
-            'useZh' => true,
+            'useZh' => true,//使用中文验证码
         );
         $verify = new \Think\Verify($cfg);
-
+        $verify->entry();
     }
     public function index(){
         echo 'Admin分组 Test控制器 index方法';
