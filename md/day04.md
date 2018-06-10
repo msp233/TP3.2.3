@@ -511,8 +511,40 @@ public function captcha(){
 ```
 第二步：在模版文件login.html中输出验证码
 ```
-
+<img src="__CONTROLLER__/captcha">
 ```
+给图片绑定点击事件，让点击图片能够刷新验证码：  
+```
+<img onclick="this.src='__CONTROLLER__/captcha/t/'+Math.random()" style="margin-left:5px;margin-right:0px;padding-right: 0px" src="__CONTROLLER__/captcha">
+```
+第三步：准备创建用户表  
+表名：`sp_user`  
+```
+create table sp_user(
+id int(11) keyx not null auto_increment,
+username varchar(40) not null,
+password char(32) not null,
+nickname varchar(40) default null,
+truename varchar(40) default null,
+dept_id int(11) default null,
+sex varchar(10) not null,
+birthday date not null,
+tel varchar(11) not null,
+email varchar(50) not null,
+remark varchar(255) default null,
+addtime int(11) default null,
+role_id int(11) default null
+);
+```
+第四步：检查表单  
+添加form标签：  
+字段完善：  
+修改登录按钮的href属性，阻止其默认的浏览器行为：
+```
+<a href="javascript:void(0)" class="btn">登录</a>
+```
+**第五步：编写jQuery代码实现表单的提交**  
+
 
 
 ## 2、完善部门管理功能

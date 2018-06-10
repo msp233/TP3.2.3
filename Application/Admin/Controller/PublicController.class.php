@@ -39,6 +39,11 @@ class PublicController extends Controller{
         $verify->entry();
     }
 
+    //验证登录
+    public function checkLogin(){
+        dump($_POST);
+    }
+
 
     public function home(){
         $this->display();
